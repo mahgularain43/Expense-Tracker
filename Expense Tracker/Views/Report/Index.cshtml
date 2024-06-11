@@ -1,0 +1,47 @@
+﻿@model IEnumerable<Expense_Tracker.Models.Transaction>
+
+@{
+    ViewData["PageTitle"] = "Report of Expenses";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="btn-group" role="group">
+            <a class="btn btn-primary" href="@Url.Action("Index", "Transaction", new { reportType = "weekly" })">Weekly Report</a>
+            <a class="btn btn-secondary" href="@Url.Action("Index", "Transaction", new { reportType = "overall" })">Overall Report</a>
+        </div>
+
+        <ejs-grid id="transactions" dataSource="@Model" gridLines="None" allowSorting="true" allowPaging="true">
+            <e-grid-pagesettings pageSize="10"></e-grid-pagesettings>
+            <e-grid-columns>
+                <e-grid-column headerText="Category" field="CategoryTitleWithIcon"></e-grid-column>
+                <e-grid-column headerText="Date" field="Date" format="yyyy-MM-dd" textAlign="Center" width="150"></e-grid-column>
+                <e-grid-column headerText="Amount" field="Amount" format="C2" textAlign="Right" width="150"></e-grid-column>
+            </e-grid-columns>
+        </ejs-grid>
+    </div>
+</div>
+
+<div class="col-md-5">
+    <div class="h-100 d-flex justify-content-center align-items-center">
+        <i class="fa-solid fa-money-bill-transfer fa-2xl"></i>
+    </div>
+</div>
+
+
+<script>
+    function loadData(reportType) {
+        $.ajax({
+            url: '@Url.Action("Index", "Report")',  // Adjust controller and action names as necessary
+            data: { reportType: reportType },
+            type: 'GET',
+            success: function (data) {
+                $('#transaction').html(data);  // Assuming server returns a partial view that refreshes the grid
+            },
+            error: function (error) {
+                console.error('Failed to load data:', error);
+                alert('Error loading data. Please try again later.');
+            }
+        });
+    }
+</script>
